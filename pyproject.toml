@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "django-dto"
-version = "0.1.0"
-description = ""
-authors = ["Your Name <you@example.com>"]
+version = "0.0.9"
+description = "A library to build DTOs from Django model entities"
+authors = ["Nicola Galloro <nico.galloro@gmail.com>"]
 readme = "README.md"
 packages = [{include = "django_dto"}]
 
