@@ -35,7 +35,7 @@ def build_dataclass_name_to_type_map(dataclass_cls) -> dict[str, type]:
     }
 
 
-types_map = {}
+types_map = {} 
 
 
 class DjangoDTOMixin:
