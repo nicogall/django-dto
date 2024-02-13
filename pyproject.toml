@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "django-dto"
+version = "0.1.0"
+description = "A library to build DTOs from Django model entities and vice versa"
+authors = ["Nicola Galloro <nico.galloro@gmail.com>"]
+readme = "README.md"
+packages = [{include = "django_dto"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+django = "^3.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^6.0.0"
+pytest-mock = "^3.10.0"
+pytest-django = "^4.5.2"
+pre-commit = "^3.3.2"
+faker = "^18.9.0"
+pytest-cov = "^4.1.0"
+tox = "^4.12.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
