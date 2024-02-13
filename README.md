@@ -1,6 +1,7 @@
 # django-dto
 
-[![pypi](https://badge.fury.io/py/django-dto.svg)](https://pypi.org/project/django-dto/)
+[![pypi](https://img.shields.io/pypi/v/django-dto
+)](https://pypi.org/project/django-dto/)
 ![test workflow](https://github.com/nicogall/django-dto/actions/workflows/test.yml/badge.svg)
 [![codecov](https://codecov.io/gh/nicogall/django-dto/graph/badge.svg?token=DC8V5FPCKF)](https://codecov.io/gh/nicogall/django-dto)
 ![pyversions](https://img.shields.io/pypi/pyversions/django-dto.svg)
