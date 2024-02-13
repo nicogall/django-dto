@@ -37,7 +37,7 @@ This way most of the pain points highlighted above are solved because:
 * DTOs are independent from the ORM and can be built without effort. 💪
 * ORM objects can be kepts in a controlled environment (i.e. DAO). ✅
 * Once the dataclass is defined, the underlying ORM is not relevant, we can switch easily to other data sources or DBMSes. ✅
-* Column aren't an issue anymore as the library supports fields mapping between django models and dataclasses 🔠
+* Column names used in the ORM model are decoupled from business logic as the library supports fields renaming (mapping) between django models and dataclasses 🔠
 
 ## Features
 
