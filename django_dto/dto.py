@@ -1,95 +1,65 @@
-import dataclasses
-
-from attr import dataclass
 from django.db import models
 
-
-class DjangoDTOException(Exception):
-    _message = "Generic DjangoDTOException"
-
-    def __init__(self, message=None):
-        super().__init__(self, self._message or message)
+from django_dto import core
 
 
-class NotADjangoModel(DjangoDTOException):
-    message = f"This is not a valid Django Model!"
-
-
-class DataclassFieldNotFound(DjangoDTOException):
-    message = "This dataclass does not have field"
-
-
-class ValidationFailed(DjangoDTOException):
-    message = "Type validation failed"
-
-
-class DjangoDTONotEnabledOnForeignKey(DjangoDTOException):
-    message = "Your Foreign Key does not support DjangoDTOException"
-
-
-def build_dataclass_name_to_type_map(dataclass_cls) -> dict[str, type]:
-    dataclass_fields = dataclasses.fields(dataclass_cls)
-    return {
-        dataclass_field.name: dataclass_field.type
-        for dataclass_field in dataclass_fields
-    }
-
-
-types_map = {} 
-
-
-class DjangoDTOMixin:
+class DTOMixin:
     def to_dto(
-        self, dataclass_cls, fields_map=None, validate_types=False, recurse=False
-    ) -> dataclass:
+        self,
+        dataclass_cls: type,
+        fields_map: dict = None,
+        validate_types: bool = False,
+        recurse: bool = False,
+        nullify_missing_fields: bool = False,
+    ) -> type:
         """
-        fields_map: remaps the value of each model field to a dataclass field
-        validate_types: is used to make sure that django model values are equal to dataclass types
-        recurse: if True recursively access foreign keys
+        Converts a Django model instance to a dataclass instance.
+
+        Args:
+            dataclass_cls: The dataclass class to convert the model instance to.
+            fields_map (Optional): A dictionary that remaps the value of each model field to a dataclass field.
+            validate_types (Optional): If True, validates that the Django model values are of the same type as the dataclass types.
+            recurse (Optional): If True, recursively accesses foreign keys.
+            nullify_missing_fields (Optional): If True, fills missing fields in the dataclass with None.
+
+        Returns:
+            dataclass: The converted dataclass instance.
+
+        Note:
+            - If a model field is defined in the `fields_map`, it will be used to build a dataclass equivalent.
+            - If `recurse` is True, foreign keys will be recursively accessed and converted to dataclass instances.
+            - If `nullify_missing_fields` is True, mandatory fields in the dataclass that are not present in the model will be filled with None.
         """
 
-        if not isinstance(self, models.Model):
-            raise NotADjangoModel()
+        return core.DjangoInstanceToDataclassTranslator(
+            self, dataclass_cls, fields_map
+        ).translate(validate_types, recurse, nullify_missing_fields)
 
-        # If a model field is defined here build a dataclass equivalent.
-        fields_map = fields_map or {}
 
-        dataclass_name_to_type = build_dataclass_name_to_type_map(dataclass_cls)
+class DTOModel(models.Model, DTOMixin):
+    class Meta:
+        abstract = True
 
-        dataclass_kwargs = {}
 
-        for django_instance_field in self._meta.get_fields():
-            django_instance_field_name = django_instance_field.name
-            if django_instance_field_name in fields_map:
-                dataclass_field_name = fields_map[django_instance_field_name]
-                if dataclass_field_name not in dataclass_name_to_type:
-                    raise DataclassFieldNotFound(
-                        f"Field `{django_instance_field}` defined in `fields_map` found in Django instance, but the corresponding field `{fields_map[django_instance_field]}` is not defined in the dataclass"
-                    )
-                dataclass_field_name = fields_map[django_instance_field_name]
-            else:
-                dataclass_field_name = django_instance_field_name
+class DjangoModelMixin:
+    def to_model(
+        self,
+        django_model_cls: type[models.Model],
+        fields_map: dict = None,
+        recurse: bool = False,
+        nullify_missing_fields: bool = False,
+    ) -> models.Model:
+        """
+        Converts a dataclass instance to a Django model instance.
 
-            if dataclass_field_name in dataclass_name_to_type:
-                django_value = getattr(self, django_instance_field_name)
-                if validate_types and not isinstance(
-                    django_value, dataclass_name_to_type[dataclass_field_name]
-                ):
-                    raise ValidationFailed(
-                        f"{django_value} is not of type {dataclass_name_to_type[dataclass_field_name]}"
-                    )
-                if isinstance(django_value, models.Model):
-                    if recurse and not isinstance(django_value, DjangoDTOMixin):
-                        raise DjangoDTONotEnabledOnForeignKey()
-                    if recurse:
-                        dataclass_kwargs[dataclass_field_name] = django_value.to_dto(
-                            dataclass_name_to_type[dataclass_field_name],
-                            fields_map=fields_map.get(django_instance_field_name),
-                            validate_types=validate_types,
-                            recurse=recurse,
-                        )
-                    else:
-                        dataclass_kwargs[dataclass_field_name] = None
-                else:
-                    dataclass_kwargs[dataclass_field_name] = django_value
-        return dataclass_cls(**dataclass_kwargs)
+        Args:
+            django_model_cls: The Django model class to convert to.
+            fields_map: A dictionary that maps dataclass field names to model field names. Defaults to None.
+            recurse: If True, recursively access foreign keys. Defaults to False.
+
+        Returns:
+            django.db.models.Model: The converted Django model instance.
+        """
+        return core.DataclassToDjangoInstanceTranslator(
+            self, django_model_cls, fields_map
+        ).translate(recurse, nullify_missing_fields)

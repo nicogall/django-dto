@@ -26,4 +26,10 @@ jobs:
         run: poetry install --with dev
 
       - name: Test
-        run: poetry run pytest
+        run: poetry run pytest --cov=django_dto
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        env:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: nicogall/django-dto
