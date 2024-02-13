@@ -4,7 +4,7 @@
 ![test workflow](https://github.com/nicogall/django-dto/actions/workflows/test.yml/badge.svg)
 [![codecov](https://codecov.io/gh/nicogall/django-dto/graph/badge.svg?token=DC8V5FPCKF)](https://codecov.io/gh/nicogall/django-dto)
 ![pyversions](https://img.shields.io/pypi/pyversions/django-dto.svg)
-![djangoversions](https://img.shields.io/pypi/djversions/django-dto.svg)
+![djangoversions](https://img.shields.io/pypi/frameworkversions/django/django-dto)
 
 
 **Django DTO** is a library 📚 that translates your django model instances to DTOs 🚀 and vice versa.
