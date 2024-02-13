@@ -26,7 +26,7 @@ jobs:
         run: poetry install --with dev
 
       - name: Test
-        run: poetry run pytest --cov=django_dto
+        run: poetry run pytest --cov=django_dto --cov-report xml:coverage.xml
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
