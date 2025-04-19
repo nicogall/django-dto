@@ -1,14 +1,34 @@
 [tool.poetry]
 name = "django-dto"
-version = "0.1.0"
+version = "0.1.4"
 description = "A library to build DTOs from Django model entities and vice versa"
 authors = ["Nicola Galloro <nico.galloro@gmail.com>"]
 readme = "README.md"
 packages = [{include = "django_dto"}]
 
+classifiers = [
+    'Development Status :: 4 - Beta',
+    'Environment :: Web Environment',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: MIT License',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Framework :: Django',
+    'Framework :: Django :: 3.2',
+    'Framework :: Django :: 4.0',
+    'Framework :: Django :: 4.1',
+    'Framework :: Django :: 4.2',
+    'Framework :: Django :: 5.0',
+]
+
 [tool.poetry.dependencies]
-python = "^3.9"
-django = "^3.0"
+python = ">=3.10"
+django = ">=3.0,^5.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^6.0.0"
